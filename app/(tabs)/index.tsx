@@ -8,8 +8,9 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { TaskContext } from "@/context/TaskContext";
-import TaskItem from "../../src/components/TaskItem";
-import { Task } from "../../src/types/task";
+import TaskItem from "@/components/TaskItem";
+import { Task } from "@/types/task";
+import { useRouter } from "expo-router";
 
 const filters = ["All", "Pending", "Todo", "Done"] as const;
 type FilterType = typeof filters[number];
@@ -17,6 +18,7 @@ type FilterType = typeof filters[number];
 export default function HomeScreen() {
   const { tasks, toggleTask, deleteTask } = useContext(TaskContext);
   const [filter, setFilter] = useState<FilterType>("All");
+  const router = useRouter();
 
   const filteredTasks = tasks.filter((task) => {
     if (filter === "All") return true;
@@ -59,6 +61,14 @@ export default function HomeScreen() {
           />
         )}
       />
+
+      {/* Tombol ke Add Task */}
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => router.push("/add")}
+      >
+        <Text style={styles.fabText}>+</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -91,4 +101,17 @@ const styles = StyleSheet.create({
   filterTextActive: {
     color: "#fff",
   },
+  fab: {
+    position: "absolute",
+    right: 20,
+    bottom: 30,
+    backgroundColor: "#3b82f6",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 5,
+  },
+  fabText: { color: "#fff", fontSize: 32, fontWeight: "800" },
 });

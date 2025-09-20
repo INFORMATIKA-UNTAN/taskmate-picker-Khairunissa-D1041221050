@@ -34,6 +34,7 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
     await AsyncStorage.setItem(TASKS_KEY, JSON.stringify(newTasks));
   };
 
+  // addTask sekarang terima full Task
   const addTask = (task: Task) => {
     const updated = [...tasks, task];
     saveTasks(updated);
@@ -42,23 +43,24 @@ export const TaskProvider = ({ children }: { children: ReactNode }) => {
   // toggle status → muter dari pending → todo → done → pending lagi
   const toggleTask = (task: Task) => {
     const nextStatus: TaskStatus =
-        task.status === 'pending'
+      task.status === 'pending'
         ? 'todo'
         : task.status === 'todo'
         ? 'done'
         : 'pending';
 
     const updated: Task[] = tasks.map((t) =>
-        t.id === task.id ? { ...t, status: nextStatus } : t
+      t.id === task.id ? { ...t, status: nextStatus } : t
     );
 
     saveTasks(updated);
-    };
+  };
 
-    const deleteTask = (task: Task) => {
-        const updated = tasks.filter((t) => t.id !== task.id);
-        saveTasks(updated);
-    };
+  const deleteTask = (task: Task) => {
+    const updated = tasks.filter((t) => t.id !== task.id);
+    saveTasks(updated);
+  };
+
   return (
     <TaskContext.Provider value={{ tasks, addTask, toggleTask, deleteTask }}>
       {children}

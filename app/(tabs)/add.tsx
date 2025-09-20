@@ -1,40 +1,58 @@
-import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Platform } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { Picker } from '@react-native-picker/picker';
-import { TaskContext } from '@/context/TaskContext';
-import { Task } from '@/types/task';
-import { useRouter } from 'expo-router';
+import { useState, useContext } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Platform,
+  Alert,
+} from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { Picker } from "@react-native-picker/picker";
+import { TaskContext } from "@/context/TaskContext";
+import { Task } from "@/types/task";
+import { useRouter } from "expo-router";
 
 export default function AddScreen() {
   const { addTask } = useContext(TaskContext);
   const router = useRouter();
 
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('')
-  const [category, setCategory] = useState('General');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("General");
   const [date, setDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
 
+  const resetForm = () => {
+    setTitle("");
+    setDescription("");
+    setCategory("General");
+    setDate(new Date());
+  };
+
   const handleAdd = () => {
-    if (!title.trim()) return;
+    if (!title.trim()) {
+      Alert.alert("Error", "Judul tidak boleh kosong!");
+      return;
+    }
 
     const newTask: Task = {
-      id: Date.now(),
+      id: Date.now(), // number
       title,
-      description: '',
+      description,
       deadline: date.toISOString(),
       category,
-      status: 'pending',
+      status: "pending",
     };
 
     addTask(newTask);
 
-    setTitle('');
-    setDescription('');
-    setCategory('General');
-    setDate(new Date());
+    Alert.alert("Sukses ✅", "Task berhasil ditambahkan!");
 
+    resetForm();
+
+    // balik ke tab Home
     router.back();
   };
 
@@ -56,19 +74,31 @@ export default function AddScreen() {
         onChangeText={setDescription}
       />
 
-      {Platform.OS === 'web' ? (
+      {/* Date Picker */}
+      {Platform.OS === "web" ? (
         <View style={styles.input}>
           <input
             type="date"
-            style={{ border: 'none', width: '100%', outline: 'none', background: 'transparent', fontSize: 16 }}
-            value={date.toISOString().split('T')[0]}
-            onChange={(e) => setDate(new Date((e.target as HTMLInputElement).value))}
+            style={{
+              border: "none",
+              width: "100%",
+              outline: "none",
+              background: "transparent",
+              fontSize: 16,
+            }}
+            value={date.toISOString().split("T")[0]}
+            onChange={(e) =>
+              setDate(new Date((e.target as HTMLInputElement).value))
+            }
           />
         </View>
       ) : (
         <>
-          <TouchableOpacity style={styles.input} onPress={() => setShowPicker(true)}>
-            <Text>{date.toISOString().split('T')[0]}</Text>
+          <TouchableOpacity
+            style={styles.input}
+            onPress={() => setShowPicker(true)}
+          >
+            <Text>{date.toISOString().split("T")[0]}</Text>
           </TouchableOpacity>
           {showPicker && (
             <DateTimePicker
@@ -84,6 +114,7 @@ export default function AddScreen() {
         </>
       )}
 
+      {/* Category Picker */}
       <View style={styles.pickerWrapper}>
         <Picker selectedValue={category} onValueChange={(v) => setCategory(v)}>
           <Picker.Item label="Mobile" value="Mobile" />
@@ -101,24 +132,29 @@ export default function AddScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: '#f8fafc' },
-  title: { fontSize: 22, fontWeight: '800', marginBottom: 16 },
+  container: { flex: 1, padding: 20, backgroundColor: "#f8fafc" },
+  title: { fontSize: 22, fontWeight: "800", marginBottom: 16 },
   input: {
     borderWidth: 1,
-    borderColor: '#cbd5e1',
+    borderColor: "#cbd5e1",
     borderRadius: 10,
     padding: 12,
     marginBottom: 12,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   pickerWrapper: {
     borderWidth: 1,
-    borderColor: '#cbd5e1',
+    borderColor: "#cbd5e1",
     borderRadius: 10,
     marginBottom: 12,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 12,
   },
-  button: { backgroundColor: '#4f7cf5', padding: 16, borderRadius: 12, alignItems: 'center' },
-  buttonText: { color: '#fff', fontWeight: '700', fontSize: 16 },
+  button: {
+    backgroundColor: "#4f7cf5",
+    padding: 16,
+    borderRadius: 12,
+    alignItems: "center",
+  },
+  buttonText: { color: "#fff", fontWeight: "700", fontSize: 16 },
 });
