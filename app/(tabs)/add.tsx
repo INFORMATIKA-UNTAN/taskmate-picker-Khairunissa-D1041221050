@@ -48,12 +48,22 @@ export default function AddScreen() {
 
     addTask(newTask);
 
-    Alert.alert("Sukses ✅", "Task berhasil ditambahkan!");
+    Alert.alert(
+      "Sukses",
+      "Task berhasil ditambahkan!",
+      [
+        {
+          text: "OK",
+          onPress: () => {
+            // Baru balik ke Home setelah user klik OK
+            router.back();
+          },
+        },
+      ]
+    );
+
 
     resetForm();
-
-    // balik ke tab Home
-    router.back();
   };
 
   return (
