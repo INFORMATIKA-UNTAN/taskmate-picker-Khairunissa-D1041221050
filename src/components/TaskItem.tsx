@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Task } from "../types/task";
+import { colorOfPriority } from "../data/priorities"; // ✅ ambil warna dari priorities.js
 
 interface TaskItemProps {
   task: Task;
@@ -42,7 +43,6 @@ export default function TaskItem({ task, onToggle, onDelete }: TaskItemProps) {
         <Text style={styles.meta}>
           {task.category} • Due {new Date(task.deadline).toISOString().split("T")[0]}
         </Text>
-
       </View>
 
       {/* Badge Category */}
@@ -54,6 +54,18 @@ export default function TaskItem({ task, onToggle, onDelete }: TaskItemProps) {
       >
         <Text style={styles.badgeText}>{task.category}</Text>
       </View>
+
+      {/* Badge Priority */}
+      {task.priority && (
+        <View
+          style={[
+            styles.badge,
+            { backgroundColor: colorOfPriority(task.priority) },
+          ]}
+        >
+          <Text style={styles.badgeText}>{task.priority}</Text>
+        </View>
+      )}
 
       {/* Badge Status */}
       <TouchableOpacity

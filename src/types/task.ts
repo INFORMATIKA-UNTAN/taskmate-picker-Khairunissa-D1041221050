@@ -1,10 +1,12 @@
-export type TaskStatus = 'pending' | 'todo' | 'done';
+// types/task.ts
+import { Priority } from "../data/priorities";
 
-export type Task = {
-  id: number;
+export interface Task {
+  id: string;
   title: string;
-  description: string;
-  deadline: string;   // pakai string supaya gampang disimpan di AsyncStorage
+  description?: string;
   category: string;
-  status: TaskStatus;
-};
+  status: "pending" | "todo" | "done";
+  deadline: string;
+  priority: Priority; // ✅ tambahin ini
+}
