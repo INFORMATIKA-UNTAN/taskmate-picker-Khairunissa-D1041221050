@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Task } from "../types/task";
-import { colorOfPriority } from "../data/priorities";
+import { colorOfPriority } from "../data/priorities"; 
 
 interface TaskItemProps {
   task: Task;
@@ -20,10 +20,17 @@ const statusColors: Record<string, string> = {
   done: "#22c55e",
 };
 
+// 🎨 Warna card berdasarkan PRIORITY
+const priorityCardColors: Record<string, string> = {
+  High: "#ffe4e6",   // merah muda
+  Medium: "#fef9c3", // kuning muda
+  Low: "#f1f5f9",    // abu-abu muda
+};
+
 export default function TaskItem({ task, onToggle, onDelete }: TaskItemProps) {
   const deadline = task.deadline ? new Date(task.deadline) : null;
   let deadlineText = "";
-  let deadlineColor = "#64748b"; // default abu
+  let deadlineColor = "#64748b";
 
   if (deadline) {
     const today = new Date();
@@ -31,34 +38,37 @@ export default function TaskItem({ task, onToggle, onDelete }: TaskItemProps) {
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
     if (task.status === "done") {
-      // ✅ Logika khusus kalau status DONE
       if (diffDays >= 0) {
         deadlineText = "✅ Selesai tepat waktu";
-        deadlineColor = "#16a34a"; // hijau
+        deadlineColor = "#16a34a";
       } else {
         deadlineText = `⚠️ Selesai (telat ${Math.abs(diffDays)} hari)`;
-        deadlineColor = "#f97316"; // oranye
+        deadlineColor = "#f97316";
       }
     } else {
-      // ✅ Normal (belum selesai)
       if (diffDays > 1) {
         deadlineText = `${diffDays} hari lagi`;
-        deadlineColor = "#0284c7"; // biru
+        deadlineColor = "#0284c7";
       } else if (diffDays === 1) {
         deadlineText = "Besok";
-        deadlineColor = "#f59e0b"; // kuning
+        deadlineColor = "#f59e0b";
       } else if (diffDays === 0) {
         deadlineText = "Hari ini";
-        deadlineColor = "#10b981"; // hijau
+        deadlineColor = "#10b981";
       } else {
         deadlineText = `Overdue ${Math.abs(diffDays)} hari`;
-        deadlineColor = "#ef4444"; // merah
+        deadlineColor = "#ef4444";
       }
     }
   }
 
   return (
-    <View style={styles.card}>
+    <View
+      style={[
+        styles.card,
+        { backgroundColor: priorityCardColors[task.priority] || "#fff" },
+      ]}
+    >
       <View style={{ flex: 1 }}>
         {/* Judul */}
         <Text
@@ -139,7 +149,6 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#fff",
     marginBottom: 12,
     padding: 12,
     borderRadius: 12,
